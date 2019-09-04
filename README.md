@@ -11,7 +11,8 @@ npm install noader
 
 ```javascript
 /*
-./app/module/test.js
+  module a
+  /app/module/a.js
 */
 module.exports = {
   name: 'test',
@@ -19,28 +20,47 @@ module.exports = {
     return str;
   },
   cls: class {
-    constructor(name) {
-      this.name = name;
+    constructor(str) {
+      this.str = str;
     }
     fun() {
-      return this.name;
+      return this.str;
     }
   }
 }
 
 /*
-./my.js
+  module b
+  /app/b.js
+*/
+module.exports = class {
+  constructor(str) {
+    this.str = str;
+  }
+  fun() {
+    return this.str;
+  }
+}
+
+/*
+  module test
+  /test.js
 */
 
 const noader = require('noader');
 
 const loader = noader();
-console.log(loader.app.module.test.name); // test
-console.log(loader.app.module.test.fun('test2')); // test2
-console.log(new (loader.app.module.test.cls)('test3').fun()); // test3
+console.log(loader.app.module.a.name); // test
+console.log(loader.app.module.a.fun('test1')); // test1
+console.log(new loader.app.module.a.cls('test2').fun()); // test2
 
-const loader2 = noader('./', 'test4');
-console.log(loader.app.module.test.cls.fun()); // test4
+//if the module is a class, the loader will auto new a instance
+console.log(loader.app.b); // class function
+console.log(loader.app.b.fun()); // undefined
+
+//the args will be used at new
+const loader2 = noader('./', 'test3');
+console.log(loader2.app.b.fun()); // test3
 
 ```
 

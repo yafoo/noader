@@ -3,22 +3,14 @@ const pt = require('path');
 const isClass = require('is-class');
 const isFile = (path) => {return fs.existsSync(path) && fs.statSync(path).isFile();}
 const isDir = (path) => {return fs.existsSync(path) && fs.statSync(path).isDirectory();}
-const readFile = (path, type='string') => {
-    return new Promise(function(resolve, reject) {
-        fs.readFile(path, function(err, data) {
-            if(err) reject(type == 'string' ? err.toString() : err);
-            resolve(type == 'string' ? data.toString().replace(/^\uFEFF/, '') : data);
-        });
-    });
-}
 
 const dirs = {};
 
-function noader(dir, ...args) {
+function noader(dir='./', ...args) {
     const box = new Map();
     const root = {};
     box.set(root, {
-        path: pt.join(pt.dirname(module.parent.filename), dir || '/', './'),
+        path: pt.join(pt.dirname(module.parent.filename), dir),
         class: false
     });
     return creatLoader(root);
@@ -26,21 +18,17 @@ function noader(dir, ...args) {
     function creatLoader(obj) {
         return new Proxy(obj, {
             get: (target, prop) => {
-                if (prop in target) return target[prop];
-                if(typeof prop == 'symbol') return;
-                const box_tgt = box.get(target);
-                if (box_tgt.class) {
-                    if (!box_tgt.instance) box_tgt.instance = new target(...args);
-                    return prop == 'instance' ? box_tgt.instance : box_tgt.instance[prop];
+                if (prop in target || typeof prop == 'symbol'){
+                    return target[prop];
                 }
-                if (prop == 'readFile') {
-                    return async (filename, type='string') => {
-                        return await readFile(box_tgt.path + filename, type='string');
-                    }
+                const tgt = box.get(target);
+                if (tgt.class) {
+                    if (!tgt.instance) tgt.instance = new target(...args);
+                    return tgt.instance[prop];
                 }
                 let child = {};
-                const child_path = box_tgt.path + prop + '/';
-                const child_file = box_tgt.path + prop + '.js';
+                const child_path = tgt.path + prop + '/';
+                const child_file = tgt.path + prop + '.js';
                 if (!dirs[child_path]) {
                     if (isFile(child_file)) dirs[child_path] = 'file';
                     else if (isDir(child_path)) dirs[child_path] = 'dir';
