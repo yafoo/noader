@@ -10,7 +10,7 @@ function noader(dir='./', ...args) {
     const box = new Map();
     const root = {};
     box.set(root, {
-        path: pt.join(pt.dirname(module.parent.filename), dir),
+        path: pt.join(pt.dirname(module.parent.filename), dir, './'),
         class: false
     });
     return creatLoader(root);
