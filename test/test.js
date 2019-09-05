@@ -10,5 +10,9 @@ console.log(loader.app.b); // class function
 console.log(loader.app.b.fun()); // undefined
 
 //the args will be used at new
-const loader2 = noader('./', 'test3');
+const loader2 = noader(__dirname, 'test3');
 console.log(loader2.app.b.fun()); // test3
+
+console.log(loader2.app.b.$class); // true
+console.log(loader2.app.b.$instance); // class instance
+console.log(loader2.app.b.$path); // true
