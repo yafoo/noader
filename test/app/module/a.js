@@ -1,7 +1,8 @@
 module.exports = {
-  name: 'test',
+  prop: 'a',
   fun: function(str){
-    return str;
+    this.prop = str;
+    return this.prop;
   },
   cls: class {
     constructor(str) {

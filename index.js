@@ -6,40 +6,34 @@ const isDir = (path) => {return fs.existsSync(path) && fs.statSync(path).isDirec
 
 const dirs = {};
 
-function noader(dir='', ...args) {
-    const box = new Map();
-    const root = {};
-    box.set(root, {
+function noader(dir, ...args) {
+    const _map = new Map();
+    const _root = {};
+    _map.set(_root, {
         path: pt.join(dir || pt.dirname(module.parent.filename), './'),
-        class: false
+        is_class: false
     });
-    return creatLoader(root);
+    return creatLoader(_root);
 
     function creatLoader(obj) {
         return new Proxy(obj, {
             get: (target, prop) => {
-                if(prop in target || typeof prop == 'symbol'){
+                if(prop in target || typeof prop == 'symbol' || prop == 'inspect'){
                     return target[prop];
                 }
-                const tgt = box.get(target);
-                if(prop == '$path'){
-                    return tgt.path;
-                }else if(prop == '$class'){
-                    return tgt.class;
+                const tgt_map = _map.get(target);
+                if(prop == '$prop'){
+                    return tgt_map;
                 }
-                if(tgt.class){
-                    if(!tgt.instance){
-                        tgt.instance = new target(...args);
+                if(tgt_map.is_class){
+                    if(!tgt_map.instance){
+                        tgt_map.instance = new target(...args);
                     }
-                    if(prop == '$instance'){
-                        return tgt.instance;
-                    }else{
-                        return tgt.instance[prop];
-                    }
+                    return tgt_map.instance[prop];
                 }
                 let child = {};
-                const child_path = tgt.path + prop + '/';
-                const child_file = tgt.path + prop + '.js';
+                const child_path = tgt_map.path + prop + '/';
+                const child_file = tgt_map.path + prop + '.js';
                 if(!dirs[child_path]){
                     if(isFile(child_file)){
                         dirs[child_path] = 'file';
@@ -54,11 +48,26 @@ function noader(dir='', ...args) {
                 }else if(dirs[child_path] != 'dir'){
                     return undefined;
                 }
-                box.set(child, {
+                _map.set(child, {
                     path: child_path,
-                    class: isClass(child)
+                    is_class: isClass(child)
                 });
-                return creatLoader(child);
+                target[prop] = creatLoader(child);
+                return target[prop];
+            },
+            set: (target, prop, value) => {
+                if(prop in target){
+                    target[prop] = value;
+                    return true;
+                }
+                const tgt_map = _map.get(target);
+                if(tgt_map.is_class){
+                    if(!tgt_map.instance){
+                        tgt_map.instance = new target(...args);
+                    }
+                    tgt_map.instance[prop] = value;
+                    return true;
+                }
             }
         });
     }
