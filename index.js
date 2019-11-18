@@ -68,6 +68,8 @@ function noader(dir, ...args) {
                     tgt_map.instance[prop] = value;
                     return true;
                 }
+                target[prop] = value;
+                return true;
             }
         });
     }
