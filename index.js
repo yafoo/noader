@@ -22,18 +22,17 @@ function noader(dir, ...args) {
                     return target[prop];
                 }
                 const map = _maps.get(target);
-                // if(prop == '$map'){
-                //     return map;
-                // }
                 if(map.is_class){
                     if(!map.instance){
                         map.instance = new target(...args);
                     }
-                    return prop == '$map' ? map : map.instance[prop];
+                    if(prop in map.instance){
+                        return map.instance[prop];
+                    }
                 }
-                // if(prop == '$map'){
-                //     return map;
-                // }
+                if(prop == '$map'){
+                    return map;
+                }
                 let child = {};
                 const child_path = map.path + prop + '/';
                 const child_file = map.path + prop + '.js';

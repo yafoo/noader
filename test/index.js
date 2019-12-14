@@ -26,3 +26,4 @@ console.log('---------------------------------');
 
 console.log(loader2.test.app2.b === loader.app2.b); // Boolean: false (because the class is a proxy object)
 console.log(loader2.test.app2.b.$map.instance === loader.app2.b.$map.instance); // Boolean: false
+console.log(loader2.test.app2.b.$map.path); // the absoulte path of b
