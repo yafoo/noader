@@ -26,9 +26,7 @@ function noader(dir, ...args) {
                     if(!map.instance){
                         map.instance = new target(...args);
                     }
-                    if(prop in map.instance){
-                        return map.instance[prop];
-                    }
+                    return map.instance[prop] ? map.instance[prop] : (prop == '$map' ? map : map.instance[prop]);
                 }
                 if(prop == '$map'){
                     return map;
