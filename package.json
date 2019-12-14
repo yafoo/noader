@@ -1,10 +1,10 @@
 {
   "name": "noader",
-  "version": "2.2.0",
+  "version": "3.0.0",
   "description": "NodeJS module automatic on-demand lazy loader",
   "main": "index.js",
   "scripts": {
-    "test": "node ./test/test.js"
+    "test": "node ./test/index.js"
   },
   "repository": {
     "type": "git",

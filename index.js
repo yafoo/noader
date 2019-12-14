@@ -7,9 +7,9 @@ const isDir = (path) => {return fs.existsSync(path) && fs.statSync(path).isDirec
 const dirs = {};
 
 function noader(dir, ...args) {
-    const _map = new Map();
+    const _maps = new Map();
     const _root = {};
-    _map.set(_root, {
+    _maps.set(_root, {
         path: pt.join(dir || pt.dirname(module.parent.filename), './'),
         is_class: false
     });
@@ -21,19 +21,22 @@ function noader(dir, ...args) {
                 if(prop in target || typeof prop == 'symbol' || prop == 'inspect'){
                     return target[prop];
                 }
-                const tgt_map = _map.get(target);
-                if(prop == '$prop'){
-                    return tgt_map;
-                }
-                if(tgt_map.is_class){
-                    if(!tgt_map.instance){
-                        tgt_map.instance = new target(...args);
+                const map = _maps.get(target);
+                // if(prop == '$map'){
+                //     return map;
+                // }
+                if(map.is_class){
+                    if(!map.instance){
+                        map.instance = new target(...args);
                     }
-                    return tgt_map.instance[prop];
+                    return prop == '$map' ? map : map.instance[prop];
                 }
+                // if(prop == '$map'){
+                //     return map;
+                // }
                 let child = {};
-                const child_path = tgt_map.path + prop + '/';
-                const child_file = tgt_map.path + prop + '.js';
+                const child_path = map.path + prop + '/';
+                const child_file = map.path + prop + '.js';
                 if(!dirs[child_path]){
                     if(isFile(child_file)){
                         dirs[child_path] = 'file';
@@ -48,7 +51,7 @@ function noader(dir, ...args) {
                 }else if(dirs[child_path] != 'dir'){
                     return undefined;
                 }
-                _map.set(child, {
+                _maps.set(child, {
                     path: child_path,
                     is_class: isClass(child)
                 });
@@ -60,12 +63,12 @@ function noader(dir, ...args) {
                     target[prop] = value;
                     return true;
                 }
-                const tgt_map = _map.get(target);
-                if(tgt_map.is_class){
-                    if(!tgt_map.instance){
-                        tgt_map.instance = new target(...args);
+                const map = _maps.get(target);
+                if(map.is_class){
+                    if(!map.instance){
+                        map.instance = new target(...args);
                     }
-                    tgt_map.instance[prop] = value;
+                    map.instance[prop] = value;
                     return true;
                 }
                 target[prop] = value;
