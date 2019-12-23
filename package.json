@@ -1,6 +1,6 @@
 {
   "name": "noader",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "NodeJS module automatic on-demand lazy loader",
   "main": "index.js",
   "scripts": {

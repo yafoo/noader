@@ -6,11 +6,11 @@ const isDir = (path) => {return fs.existsSync(path) && fs.statSync(path).isDirec
 
 const dirs = {};
 
-function noader(dir, ...args) {
+function noader(dir='./', ...args) {
     const _maps = new Map();
     const _root = {};
     _maps.set(_root, {
-        path: pt.join(dir || pt.dirname(module.parent.filename), './'),
+        path: dir[0] == '/' || ~dir.indexOf(':') ? dir : pt.join(pt.dirname(module.parent.filename), dir),
         is_class: false
     });
     return creatLoader(_root);

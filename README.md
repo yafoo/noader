@@ -4,7 +4,7 @@ NodeJS module automatic on-demand lazy loader（NodeJS模块自动按需懒加�
 # Install
 
 ```bash
-npm install noader
+npm i noader
 ```
 
 # Usage
@@ -69,7 +69,7 @@ console.log(c.str); // String: 'test3'
 
 console.log('---------------------------------');
 
-const loader2 = noader(__dirname + '/../', 'test4');
+const loader2 = noader('../', 'test4');
 console.log(loader2.test.app.module.a); // Object: a
 console.log(loader2.test.app2.b); // Class: b
 console.log(loader2.test.app2.b.str); // String: 'test4'
@@ -112,8 +112,8 @@ npm test
 
 # links
 
-- [github(noader)](https://github.com/yafoo/noader)
-- [github(iijs)](https://github.com/yafoo/iijs)
+- [github](https://github.com/yafoo/noader)
+- [blog](https://me.i-i.me/article/12.html)
 
 # License
 
