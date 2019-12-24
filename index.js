@@ -10,7 +10,7 @@ function noader(dir='./', ...args) {
     const _maps = new Map();
     const _root = {};
     _maps.set(_root, {
-        path: dir[0] == '/' || ~dir.indexOf(':') ? pt.join(dir, './') : pt.join(pt.dirname(module.parent.filename), dir, './'),
+        path: pt.isAbsolute(dir) ? pt.join(dir, './') : pt.join(pt.dirname(module.parent.filename), dir, './'),
         is_class: false
     });
     return creatLoader(_root);
