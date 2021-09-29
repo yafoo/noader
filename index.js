@@ -45,6 +45,7 @@ function noader(dir='./', ...args) {
                 }
                 if(dirs[child_path] == 'file'){
                     child = require(child_file);
+                    if (child.__esModule) child = child.default
                 }else if(dirs[child_path] != 'dir'){
                     return undefined;
                 }
